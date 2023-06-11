@@ -19,13 +19,21 @@ def parse(OA):
             # OAd.set_index(1, inplace=True)
 
         elif R.startswith('0') or R.startswith('1'): # Sloane format
-            OAd = pd.read_csv(OA, header=None, names = range(len(R.strip())))
+            # print('Sloane format', len(R.strip()))
+            if ',' in R:
+                OAd = pd.read_csv(OA, header=None, names = range(len(R.strip(','))))
+            else:
+                OAd = pd.read_table(OA, header=None, names = range(len(R.strip('\t'))))
             if (OAd == 0).any().any():
                 # Increment all values by 1
                 OAd = OAd + 1
+        elif R.startswith('-1'): #https://develve.net/Orthogonal%20Array.html
+            OAd = pd.read_table(OA, header=None, names = range(len(R.strip('\t'))))
+            OAd = OAd + 2
         elif R.startswith('+') or R.startswith('-'): # Annoying format
             OAd=pd.read_csv(OA, header=None, names=list(range(1, len(R.strip())+1)))
             OAd.replace({'+': 2, '-': 1}, inplace=True)
+        # print(OAd)
         return OAd.dropna(axis=1)
 
 # def parseData(dataFile):
